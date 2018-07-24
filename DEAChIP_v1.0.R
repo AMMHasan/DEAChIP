@@ -5,18 +5,23 @@
 # In addition, R/Bioconductor package DESeq is used here for the comparative analysis of IP data (with biological replicates) between different conditions or different strains of E. coli. 
 # For the later case, at least three biological replicates of each strain or condition are needed for a statistically significant fold-change measurement of DNA enrichment at a defined region in the genome, otherwise, the same method can be used for exploratory data analysis without any statistical significance. In the latter case, a minimum of two independent biological repeats are recommended to confirm qualitative reproducibility.
 
+source("https://bioconductor.org/biocLite.R")
+biocLite("DESeq")
+library(DESeq)
 
-require(ggplot2)
-require(seqinr)
-require(DESeq)
+install.packages("ggplot2")
+library(ggplot2)
+
+install.packages("seqinr")
+library(seqinr)
 
 
 
-# Loading the data
+
+# Loading the data ... ...
 data <- read.csv("1kb_binned_count_data.csv")
 
-
-# A library size normalisation method, suggested by Simon Anders & Huber, 2010
+# A library size normalisation method, suggested by Simon Anders & Huber, 2010.
 median_normalization <- function(data){
   data_gm <- transform(data, gm=apply(data, 1, function(data){exp(mean(log(data), na.rm = T))}))
   data_div_by_gm <- apply(data, 2, function(data){data/data_gm$gm})
@@ -25,11 +30,9 @@ median_normalization <- function(data){
   return(norm_data)
 }
 
-
 normalised_data <- median_normalization(data[,2:9])
 
 plot_data <- data.frame(position=seq(from= 500,by = 1000, length.out = nrow(data)))
-
 plot_data <- cbind(plot_data, normalised_data)
 
 plot_data <- transform(plot_data, DL4184A=plot_data$DL4184A_IP/plot_data$DL4184A_IN)
@@ -51,8 +54,9 @@ plot_data <- transform(plot_data, avg_DL4201_IP=(plot_data$DL4201A_IP+plot_data$
 plot_data <- transform(plot_data, avg_IP_DL4184_vs_avg_IP_DL4201=plot_data$avg_DL4184_IP/plot_data$avg_DL4201_IP)
 
 
-##############################
-#######DESeq#######################
+######################
+####### DESeq ########
+######################
 
 # A: DL4184IP vs DL4201IP
 
@@ -64,9 +68,8 @@ sizeFactors(DDS)
 DDS2 <- estimateDispersions(DDS,fitType="local")
 res <- nbinomTest(DDS2,"DL4201","DL4184")
 
-
 plot_data <- cbind(plot_data, DESeq_DL4184IP_vs_DL4201IP=res$foldChange)
-plot_data <- transform(plot_data, ideal_vs_DESeqIPcomp = plot_data$avg_DL4184_vs_avg_DL4201/plot_data$DESeq_DL4184IP_vs_DL4201IP)
+
 # B: DL4184IP vs DL4184IN
 
 countData_B <- data.frame(data[,c(3,5,2,4)], row.names = data$Bin)
@@ -77,9 +80,7 @@ sizeFactors(DDS)
 DDS2 <- estimateDispersions(DDS,fitType="local")
 res <- nbinomTest(DDS2,"DL4184IN","DL4184IP")
 
-
 plot_data <- cbind(plot_data, DESeq_DL4184IP_vs_DL4184IN=res$foldChange)
-
 
 # C: DL4201IP vs DL4201IN
 
@@ -91,10 +92,5 @@ sizeFactors(DDS)
 DDS2 <- estimateDispersions(DDS,fitType="local")
 res <- nbinomTest(DDS2,"DL4201IN","DL4201IP")
 
-
 plot_data <- cbind(plot_data, DESeq_DL4201IP_vs_DL4201IN=res$foldChange)
-
-
-
-
 
