@@ -58,7 +58,7 @@ plot_data <- transform(plot_data, avg_IP_DL4184_vs_avg_IP_DL4201=plot_data$avg_D
 ####### DESeq ########
 ######################
 
-# A: DL4184IP vs DL4201IP
+# DL4184IP vs DL4201IP
 
 countData_A <- data.frame(data[,c(3,5,7,9)], row.names = data$Bin)
 condition <- factor(c("DL4184","DL4184","DL4201","DL4201"))
@@ -70,27 +70,14 @@ res <- nbinomTest(DDS2,"DL4201","DL4184")
 
 plot_data <- cbind(plot_data, DESeq_DL4184IP_vs_DL4201IP=res$foldChange)
 
-# B: DL4184IP vs DL4184IN
+#####################
+##### plotting ######
+#####################
 
-countData_B <- data.frame(data[,c(3,5,2,4)], row.names = data$Bin)
-condition <- factor(c("DL4184IP","DL4184IP","DL4184IN","DL4184IN"))
-DDS <- newCountDataSet(countData_B, condition)
-DDS <- estimateSizeFactors(DDS)
-sizeFactors(DDS)
-DDS2 <- estimateDispersions(DDS,fitType="local")
-res <- nbinomTest(DDS2,"DL4184IN","DL4184IP")
-
-plot_data <- cbind(plot_data, DESeq_DL4184IP_vs_DL4184IN=res$foldChange)
-
-# C: DL4201IP vs DL4201IN
-
-countData_C <- data.frame(data[,c(7,9,6,8)], row.names = data$Bin)
-condition <- factor(c("DL4201IP","DL4201IP","DL4201IN","DL4201IN"))
-DDS <- newCountDataSet(countData_C, condition)
-DDS <- estimateSizeFactors(DDS)
-sizeFactors(DDS)
-DDS2 <- estimateDispersions(DDS,fitType="local")
-res <- nbinomTest(DDS2,"DL4201IN","DL4201IP")
-
-plot_data <- cbind(plot_data, DESeq_DL4201IP_vs_DL4201IN=res$foldChange)
+# An example code for visualising the calculated fold change along the length of the E. coli genome:
+ggplot(data=plot_data, aes(position, avg_DL4184_vs_avg_DL4201))+
+  geom_ribbon(data=plot_data,aes(ymax=avg_DL4184_vs_avg_DL4201, ymin=1), colour="red", fill="salmon")+
+   xlab("Chromosomal position")+
+  ylab("Fold Change")+
+  ggtitle("Ratio: 'Average IN normalised Rec+ pal+ IP' to ' IN normalised Average Rec+ pal- IP'")
 
