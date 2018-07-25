@@ -1,9 +1,6 @@
 The data is available on:
 
-
 Data type: 50 bp paired-end reads from Illumina sequencing platform.
 
-
-The contributor of the datasets is:
-
-1. Dr. Benura Azeroglu, Post-doctoral Research Fellow, The Leach lab, Institute of Cell Biology, University of Edinburgh.
+Contributor of the datasets:
+Dr. Benura Azeroglu, Post-doctoral Research Fellow, The Leach lab, Institute of Cell Biology, University of Edinburgh.
