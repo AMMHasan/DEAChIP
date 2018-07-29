@@ -2,7 +2,7 @@
 
 **D**ifferential **E**nrichment **A**nalysis of **ChIP**-seq data
 
-This script deals with comparative ChIP-seq data (from Illumina sequence platform) analysis, to accompany the manuscript "Genomic Analysis of DNA Double-Strand Break Repair in *Escherichia coli*" (2018)
+This script describes the workflow for comparative ChIP-seq data (from Illumina sequence platform) analysis, to accompany the manuscript "Genomic Analysis of DNA Double-Strand Break Repair in *Escherichia coli*" (2018)
 
 The analysis can be done manually with a combination of library size normalisation (suggested by *Simon Anders & Huber, 2010*) and further normalisation of IP data by input data (where available).
 
